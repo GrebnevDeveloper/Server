@@ -17,7 +17,6 @@ namespace Server
         public void Setup()
         {
             serverResponse = new ServerResponse("127.0.0.1", "8080");
-//            context = serverResponse.GetHttpListener().GetContext();
         }
         [Test]
         public void Ping()
