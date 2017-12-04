@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-
+    //todo: убрать из параметров метода этого класса context
     class ServerResponse
     {
         HttpListener listener;

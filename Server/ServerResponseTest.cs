@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
+    //todo: тесты на сервер надо писать с помощью клиента
     [TestFixture]
     class ServerResponseTest
     {
@@ -28,6 +29,7 @@ namespace Server
         public void Stop()
         {
             serverResponse.StopServer();
+            //todo: проверка что тру равно нефолс? может по-русски?
             Assert.IsTrue(!serverResponse.GetHttpListener().IsListening);
         }
         [Test]
