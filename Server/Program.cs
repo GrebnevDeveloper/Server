@@ -19,10 +19,11 @@ namespace Server
             while (server.GetHttpListener().IsListening)
             {
                 HttpListenerContext context = server.GetHttpListener().GetContext();
+                server.SetContext(context);
                 switch (context.Request.RawUrl)
                 {
                     case "/ping/":
-                        if (server.GetPing(context) == HttpStatusCode.OK)
+                        if (server.GetPing() == HttpStatusCode.OK)
                         {
                             Console.WriteLine("Сервер доступен...");
                         }
@@ -31,13 +32,17 @@ namespace Server
                             Console.WriteLine("Сервер не доступен...");
                         }
                         break;
-                    case "/postinpuntdata/":
-                        input = server.PostData(context);
+                    case "/postinputdata/":
+                        input = server.PostData();
                         break;
                     case "/getanswer/":
                         if(input != null)
                         {
-                            server.GetAnswer(context, new Output(input));
+                            server.GetAnswer(new Output(input));
+                        }
+                        else
+                        {
+                            server.GetAnswer(null);
                         }
                         break;
                     case "/stop/":

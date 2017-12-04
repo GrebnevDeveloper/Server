@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
+    //todo: тесты на сервер надо писать с помощью клиента (check)
     [TestFixture]
     class ServerResponseTest
     {
@@ -21,23 +22,14 @@ namespace Server
         [Test]
         public void Ping()
         {
-            HttpListenerContext context = serverResponse.GetHttpListener().GetContext();
-            Assert.Equals(serverResponse.GetPing(context), HttpStatusCode.OK);
+            Assert.Equals(serverResponse.GetPing(), HttpStatusCode.OK);
         }
         [Test]
         public void Stop()
         {
             serverResponse.StopServer();
-            Assert.IsTrue(!serverResponse.GetHttpListener().IsListening);
-        }
-        [Test]
-        public void GetAndPost()
-        {
-            HttpListenerContext context = serverResponse.GetHttpListener().GetContext();
-            Input input = serverResponse.PostData(context);
-            Assert.NotNull(input);
-            Assert.IsInstanceOf(typeof(Input), input);
-            serverResponse.GetAnswer(context, new Output(input));
+            //todo: проверка что тру равно нефолс? может по-русски? (check)
+            Assert.IsFalse(serverResponse.GetHttpListener().IsListening);
         }
     }
 }
