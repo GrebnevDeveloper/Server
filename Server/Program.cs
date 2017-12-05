@@ -33,7 +33,7 @@ namespace Server
                         }
                         break;
                     case "/postinputdata/":
-                        input = server.PostData();
+                        input = server.PostData<Input>();
                         break;
                     case "/getanswer/":
                         if(input != null)
@@ -42,7 +42,7 @@ namespace Server
                         }
                         else
                         {
-                            server.GetAnswer(null);
+                            server.GetAnswer(default(Output));
                         }
                         break;
                     case "/stop/":

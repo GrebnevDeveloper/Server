@@ -20,11 +20,6 @@ namespace Server
             serverResponse = new ServerResponse("127.0.0.1", "8080");
         }
         [Test]
-        public void Ping()
-        {
-            Assert.Equals(serverResponse.GetPing(), HttpStatusCode.OK);
-        }
-        [Test]
         public void Stop()
         {
             serverResponse.StopServer();

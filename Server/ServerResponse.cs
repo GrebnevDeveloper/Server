@@ -13,6 +13,7 @@ namespace Server
     {
         HttpListener listener;
         HttpListenerContext context;
+        Serializer serializer;
         string host;
         string port;
 
@@ -22,6 +23,7 @@ namespace Server
             this.port = port;
             listener = new HttpListener();
             context = null;
+            serializer = new Serializer();
             listener.Prefixes.Add($"http://{host}:{port}/ping/");
             listener.Prefixes.Add($"http://{host}:{port}/stop/");
             listener.Prefixes.Add($"http://{host}:{port}/getanswer/");
@@ -42,26 +44,30 @@ namespace Server
         {
             return context;
         }
-        public Input PostData()
+        public T PostData<T>()
         {
             HttpListenerRequest request = context.Request;
             if(request.HasEntityBody)
             {
-                var sr = new StreamReader(request.InputStream);
-                var source = Encoding.UTF8.GetBytes(sr.ReadToEnd());
-                Console.WriteLine("Запрос получен");
-                return Serializer.Deserialize(source);
+                using (var sr = new StreamReader(request.InputStream))
+                {
+                    var source = Encoding.UTF8.GetBytes(sr.ReadToEnd());
+                    Console.WriteLine("Запрос получен");
+                    return serializer.Deserialize<T>(source);
+                }
             }
-            return null;
+            return default(T);
         }
-        public void GetAnswer(Output output)
+        public void GetAnswer<T>(T obj)
         {
             HttpListenerResponse response = context.Response;
-            if(output != null)
+            if(obj != null)
             {
-                var sw = new StreamWriter(response.OutputStream);
-                sw.Write(Encoding.UTF8.GetString(Serializer.Serialize(output)));
-                Console.WriteLine("Ответ отправлен");
+                using (var sw = new StreamWriter(response.OutputStream))
+                {
+                    sw.Write(Encoding.UTF8.GetString(serializer.Serialize<T>(obj)));
+                    Console.WriteLine("Ответ отправлен");
+                }
             }
             response.Close();
         }
@@ -70,10 +76,13 @@ namespace Server
             if (listener.IsListening)
             {
                 HttpListenerResponse response = context.Response;
-                var sw = new StreamWriter(response.OutputStream);
-                sw.Write(HttpStatusCode.OK);
-                response.Close();
-                return HttpStatusCode.OK;
+                using (var sw = new StreamWriter(response.OutputStream))
+                {
+                    sw.Write(HttpStatusCode.OK);
+                    response.Close();
+                    return HttpStatusCode.OK;
+                }
+
             }
             else
             {
